@@ -1,6 +1,9 @@
+import datetime
 import io
 import time
 from unittest import mock
+
+from freezegun import freeze_time
 
 from ntropy import measure
 
@@ -22,6 +25,26 @@ def _takes_one_second():
 
 @measure
 def _takes_two_seconds():
+    time.sleep(2)
+
+
+@measure
+def _takes_one_mocked_hour():
+    time.sleep(1)
+
+
+@measure
+def _takes_two_mocked_hours():
+    time.sleep(2)
+
+
+@measure
+def _takes_one_mocked_minute():
+    time.sleep(1)
+
+
+@measure
+def _takes_two_mocked_minutes():
     time.sleep(2)
 
 
@@ -47,11 +70,11 @@ def test_takes_one_second():
     with mock.patch("sys.stdout", new=io.StringIO()) as out:
         _takes_one_second()
         out_value = out.getvalue()
-        should_not_be_in_stdout = ["hours", "hour", "minutes", "minute", " seconds"]
+        should_not_be_in_stdout = ["hours", "hour", "minutes", "minute", " seconds "]
         assert len(out_value) > 0, "No stdout text found."
         assert all(
             string not in out_value for string in should_not_be_in_stdout
-        ), f"These strings shouldn't show up in stdout: {'|'.join(should_not_be_in_stdout)}"
+        ), f"These strings shouldn't show up in stdout: {'|'.join(should_not_be_in_stdout)}.\n Got: {out_value}"
         assert "1 second" in out.getvalue(), "Function took an unexpected time to run."
 
 
@@ -59,10 +82,94 @@ def test_takes_two_seconds():
     with mock.patch("sys.stdout", new=io.StringIO()) as out:
         _takes_two_seconds()
         out_value = out.getvalue()
-        should_not_be_in_stdout = ["hours", "hour", "minutes", "minute", "second "]
+        should_not_be_in_stdout = ["hours", "hour", "minutes", "minute", " second "]
 
         assert len(out_value) > 0, "No stdout text found."
         assert all(
             string not in out_value for string in should_not_be_in_stdout
-        ), f"These strings shouldn't show up in stdout: {'|'.join(should_not_be_in_stdout)}"
+        ), f"These strings shouldn't show up in stdout: {'|'.join(should_not_be_in_stdout)}.\n Got: {out_value}"
         assert "2 seconds" in out.getvalue(), "Function took an unexpected time to run."
+
+
+def test_takes_one_minute(monkeypatch):
+    with freeze_time("2000-01-01 00:00:00") as frozen_datetime:
+
+        def mock_sleep(minutes):
+            td = datetime.timedelta(minutes=minutes)
+            frozen_datetime.tick(td)
+
+        monkeypatch.setattr(time, "sleep", mock_sleep)
+
+        with mock.patch("sys.stdout", new=io.StringIO()) as out:
+            _takes_one_mocked_minute()
+            out_value = out.getvalue()
+            should_not_be_in_stdout = ["hour", "hours", "minutes", "second", "seconds"]
+
+            assert len(out_value) > 0, "No stdout text found."
+            assert all(
+                string not in out_value for string in should_not_be_in_stdout
+            ), f"These strings shouldn't show up in stdout: {'|'.join(should_not_be_in_stdout)}.\n Got: {out_value}"
+            assert "1 minute" in out.getvalue(), "Function took an unexpected time to run."
+
+
+def test_takes_two_minutes(monkeypatch):
+    with freeze_time("2000-01-01 00:00:00") as frozen_datetime:
+
+        def mock_sleep(minutes):
+            td = datetime.timedelta(minutes=minutes)
+            frozen_datetime.tick(td)
+
+        monkeypatch.setattr(time, "sleep", mock_sleep)
+
+        with mock.patch("sys.stdout", new=io.StringIO()) as out:
+            _takes_two_mocked_minutes()
+            out_value = out.getvalue()
+            should_not_be_in_stdout = ["hour", "hours", "minute ", "second", "seconds"]
+
+            assert len(out_value) > 0, "No stdout text found."
+            assert all(
+                string not in out_value for string in should_not_be_in_stdout
+            ), f"These strings shouldn't show up in stdout: {'|'.join(should_not_be_in_stdout)}.\n Got: {out_value}"
+            assert "2 minutes" in out.getvalue(), "Function took an unexpected time to run."
+
+
+def test_takes_one_hour(monkeypatch):
+    with freeze_time("2000-01-01 00:00:00") as frozen_datetime:
+
+        def mock_sleep(hours):
+            td = datetime.timedelta(hours=hours)
+            frozen_datetime.tick(td)
+
+        monkeypatch.setattr(time, "sleep", mock_sleep)
+
+        with mock.patch("sys.stdout", new=io.StringIO()) as out:
+            _takes_one_mocked_hour()
+            out_value = out.getvalue()
+            should_not_be_in_stdout = ["hours", "minutes", "minute", "second", "seconds"]
+
+            assert len(out_value) > 0, "No stdout text found."
+            assert all(
+                string not in out_value for string in should_not_be_in_stdout
+            ), f"These strings shouldn't show up in stdout: {'|'.join(should_not_be_in_stdout)}.\n Got: {out_value}"
+            assert "1 hour" in out.getvalue(), "Function took an unexpected time to run."
+
+
+def test_takes_two_hours(monkeypatch):
+    with freeze_time("2000-01-01 00:00:00") as frozen_datetime:
+
+        def mock_sleep(hours):
+            td = datetime.timedelta(hours=hours)
+            frozen_datetime.tick(td)
+
+        monkeypatch.setattr(time, "sleep", mock_sleep)
+
+        with mock.patch("sys.stdout", new=io.StringIO()) as out:
+            _takes_two_mocked_hours()
+            out_value = out.getvalue()
+            should_not_be_in_stdout = ["hour ", "minutes", "minute", "second", "seconds"]
+
+            assert len(out_value) > 0, "No stdout text found."
+            assert all(
+                string not in out_value for string in should_not_be_in_stdout
+            ), f"These strings shouldn't show up in stdout: {'|'.join(should_not_be_in_stdout)}.\n Got: {out_value}"
+            assert "2 hours" in out.getvalue(), "Function took an unexpected time to run."
