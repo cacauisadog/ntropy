@@ -48,6 +48,11 @@ def _takes_two_mocked_minutes():
     time.sleep(2)
 
 
+@measure
+def _takes_two_mocked_hours_two_minutes_two_seconds():
+    time.sleep(7322)
+
+
 def test_func_name_in_stdout():
     with mock.patch("sys.stdout", new=io.StringIO()) as out:
         _takes_one_milisecond()
@@ -57,7 +62,7 @@ def test_func_name_in_stdout():
         assert "_takes_one_milisecond" in out_value, "Couldn't find the function name in stdout."
 
 
-def test_disable_garbage_collection():
+def test_disables_garbage_collection():
     with mock.patch("sys.stdout", new=io.StringIO()) as out:
         _takes_one_milisecond_with_gc_off()
         out_value = out.getvalue()
@@ -173,3 +178,26 @@ def test_takes_two_hours(monkeypatch):
                 string not in out_value for string in should_not_be_in_stdout
             ), f"These strings shouldn't show up in stdout: {'|'.join(should_not_be_in_stdout)}.\n Got: {out_value}"
             assert "2 hours" in out.getvalue(), "Function took an unexpected time to run."
+
+
+def test_takes_two_hours_two_minutes_two_seconds(monkeypatch):
+    with freeze_time("2000-01-01 00:00:00") as frozen_datetime:
+
+        def mock_sleep(seconds):
+            td = datetime.timedelta(seconds=seconds)
+            frozen_datetime.tick(td)
+
+        monkeypatch.setattr(time, "sleep", mock_sleep)
+
+        with mock.patch("sys.stdout", new=io.StringIO()) as out:
+            _takes_two_mocked_hours_two_minutes_two_seconds()
+            out_value = out.getvalue()
+            should_not_be_in_stdout = ["hour ", "minute ", "second "]
+
+            assert len(out_value) > 0, "No stdout text found."
+            assert all(
+                string not in out_value for string in should_not_be_in_stdout
+            ), f"These strings shouldn't show up in stdout: {'|'.join(should_not_be_in_stdout)}.\n Got: {out_value}"
+            assert "2 hours" in out.getvalue(), "Function took an unexpected time to run."
+            assert "2 minutes" in out.getvalue(), "Function took an unexpected time to run."
+            assert "2 seconds" in out.getvalue(), "Function took an unexpected time to run."
