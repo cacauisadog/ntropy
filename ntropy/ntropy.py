@@ -58,27 +58,32 @@ def _build_time_dict(abs_elapsed_time_ms):
 
 def _build_time_message(func_name, time_dict):
     message = f"The function '{func_name}' took"
+    time_taken_message = ""
 
     if time_dict["hours"] == 1:
-        message += " 1 hour"
+        time_taken_message += " 1 hour"
     if time_dict["hours"] > 1:
-        message += f" {time_dict['hours']} hours"
+        time_taken_message += f" {time_dict['hours']} hours"
 
     if time_dict["minutes"] == 1:
-        message += " 1 minute"
+        time_taken_message += " 1 minute"
     if time_dict["minutes"] > 1:
-        message += f" {time_dict['minutes']} minutes"
+        time_taken_message += f" {time_dict['minutes']} minutes"
 
     if time_dict["seconds"] == 1:
-        message += " 1 second"
+        time_taken_message += " 1 second"
     if time_dict["seconds"] > 1:
-        message += f" {time_dict['seconds']} seconds"
+        time_taken_message += f" {time_dict['seconds']} seconds"
 
     if time_dict["miliseconds"] == 1:
-        message += " 1 milisecond"
+        time_taken_message += " 1 milisecond"
     if time_dict["miliseconds"] > 1:
-        message += f" {time_dict['miliseconds']} miliseconds"
+        time_taken_message += f" {time_dict['miliseconds']} miliseconds"
 
-    message += " to run."
+    # if nothing matched, it means that the function took less than a fraction of a milisecond to run
+    if len(time_taken_message) == 0:
+        time_taken_message = " less than one milisecond"
 
-    return message
+    full_message = message + time_taken_message + " to run."
+
+    return full_message
