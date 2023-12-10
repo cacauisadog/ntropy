@@ -85,7 +85,7 @@ def test_takes_one_second():
         assert all(
             string not in out_value for string in should_not_be_in_stdout
         ), f"These strings shouldn't show up in stdout: {'|'.join(should_not_be_in_stdout)}.\n Got: {out_value}"
-        assert "1 second" in out.getvalue(), "Function took an unexpected time to run."
+        assert "1 second" in out_value, "Function took an unexpected time to run."
 
 
 def test_takes_two_seconds():
@@ -98,7 +98,7 @@ def test_takes_two_seconds():
         assert all(
             string not in out_value for string in should_not_be_in_stdout
         ), f"These strings shouldn't show up in stdout: {'|'.join(should_not_be_in_stdout)}.\n Got: {out_value}"
-        assert "2 seconds" in out.getvalue(), "Function took an unexpected time to run."
+        assert "2 seconds" in out_value, "Function took an unexpected time to run."
 
 
 def test_takes_one_minute(monkeypatch):
@@ -119,7 +119,7 @@ def test_takes_one_minute(monkeypatch):
             assert all(
                 string not in out_value for string in should_not_be_in_stdout
             ), f"These strings shouldn't show up in stdout: {'|'.join(should_not_be_in_stdout)}.\n Got: {out_value}"
-            assert "1 minute" in out.getvalue(), "Function took an unexpected time to run."
+            assert "1 minute" in out_value, "Function took an unexpected time to run."
 
 
 def test_takes_two_minutes(monkeypatch):
@@ -140,7 +140,7 @@ def test_takes_two_minutes(monkeypatch):
             assert all(
                 string not in out_value for string in should_not_be_in_stdout
             ), f"These strings shouldn't show up in stdout: {'|'.join(should_not_be_in_stdout)}.\n Got: {out_value}"
-            assert "2 minutes" in out.getvalue(), "Function took an unexpected time to run."
+            assert "2 minutes" in out_value, "Function took an unexpected time to run."
 
 
 def test_takes_one_hour(monkeypatch):
@@ -161,7 +161,7 @@ def test_takes_one_hour(monkeypatch):
             assert all(
                 string not in out_value for string in should_not_be_in_stdout
             ), f"These strings shouldn't show up in stdout: {'|'.join(should_not_be_in_stdout)}.\n Got: {out_value}"
-            assert "1 hour" in out.getvalue(), "Function took an unexpected time to run."
+            assert "1 hour" in out_value, "Function took an unexpected time to run."
 
 
 def test_takes_two_hours(monkeypatch):
@@ -182,7 +182,7 @@ def test_takes_two_hours(monkeypatch):
             assert all(
                 string not in out_value for string in should_not_be_in_stdout
             ), f"These strings shouldn't show up in stdout: {'|'.join(should_not_be_in_stdout)}.\n Got: {out_value}"
-            assert "2 hours" in out.getvalue(), "Function took an unexpected time to run."
+            assert "2 hours" in out_value, "Function took an unexpected time to run."
 
 
 def test_takes_two_hours_two_minutes_two_seconds(monkeypatch):
@@ -203,9 +203,9 @@ def test_takes_two_hours_two_minutes_two_seconds(monkeypatch):
             assert all(
                 string not in out_value for string in should_not_be_in_stdout
             ), f"These strings shouldn't show up in stdout: {'|'.join(should_not_be_in_stdout)}.\n Got: {out_value}"
-            assert "2 hours" in out.getvalue(), "Function took an unexpected time to run."
-            assert "2 minutes" in out.getvalue(), "Function took an unexpected time to run."
-            assert "2 seconds" in out.getvalue(), "Function took an unexpected time to run."
+            assert "2 hours" in out_value, "Function took an unexpected time to run."
+            assert "2 minutes" in out_value, "Function took an unexpected time to run."
+            assert "2 seconds" in out_value, "Function took an unexpected time to run."
 
 
 def test_takes_less_than_a_milisecond():
@@ -214,4 +214,4 @@ def test_takes_less_than_a_milisecond():
         out_value = out.getvalue()
 
         assert len(out_value) > 0, "No stdout text found."
-        assert "less than one milisecond", "Function took an unexpected time to run."
+        assert "less than one milisecond" in out_value, "Function took an unexpected time to run."
