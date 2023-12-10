@@ -53,6 +53,11 @@ def _takes_two_mocked_hours_two_minutes_two_seconds():
     time.sleep(7322)
 
 
+@measure
+def _takes_less_than_one_milisecond():
+    print("this is pretty fast boi")
+
+
 def test_func_name_in_stdout():
     with mock.patch("sys.stdout", new=io.StringIO()) as out:
         _takes_one_milisecond()
@@ -201,3 +206,12 @@ def test_takes_two_hours_two_minutes_two_seconds(monkeypatch):
             assert "2 hours" in out.getvalue(), "Function took an unexpected time to run."
             assert "2 minutes" in out.getvalue(), "Function took an unexpected time to run."
             assert "2 seconds" in out.getvalue(), "Function took an unexpected time to run."
+
+
+def test_takes_less_than_a_milisecond():
+    with mock.patch("sys.stdout", new=io.StringIO()) as out:
+        _takes_less_than_one_milisecond()
+        out_value = out.getvalue()
+
+        assert len(out_value) > 0, "No stdout text found."
+        assert "less than one milisecond", "Function took an unexpected time to run."
