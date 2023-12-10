@@ -69,16 +69,16 @@ def _build_time_message(func_name, time_dict):
     if time_dict["minutes"] > 1:
         message += f" {time_dict['minutes']} minutes"
 
-    if time_dict['seconds'] == 1:
-        message += ' 1 seconds'
-    if time_dict['seconds'] > 1:
-        message += f' {time_dict['seconds']} seconds'
+    if time_dict["seconds"] == 1:
+        message += " 1 second"
+    if time_dict["seconds"] > 1:
+        message += f" {time_dict['seconds']} seconds"
 
-    if time_dict['miliseconds'] == 1:
-        message += ' 1 milisecond'
-    if time_dict['miliseconds'] > 1:
-        message += f' {time_dict['miliseconds']} miliseconds'
+    if time_dict["miliseconds"] == 1:
+        message += " 1 milisecond"
+    if time_dict["miliseconds"] > 1:
+        message += f" {time_dict['miliseconds']} miliseconds"
 
-    message += ' to run.'
+    message += " to run."
 
     return message
