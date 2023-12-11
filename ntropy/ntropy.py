@@ -6,7 +6,7 @@ from typing import Callable, Literal, Optional
 
 
 def measure_time(
-    func: Optional[Callable] = None, *, message_format: Literal["complete", "short"] = "complete", disable_gc=False
+    func: Optional[Callable] = None, *, message_format: Literal["human", "complete"] = "human", disable_gc=False
 ):
     if func is None:
         return partial(measure_time, disable_gc=disable_gc)
@@ -59,11 +59,11 @@ def _build_time_dict(abs_elapsed_time_ms):
 
 
 def _build_time_message(func_name, time_dict, message_format):
-    if message_format == "complete":
-        return _build_complete_time_message(func_name, time_dict)
+    if message_format == "human":
+        return _build_human_friendly_time_message(func_name, time_dict)
 
 
-def _build_complete_time_message(func_name, time_dict):
+def _build_human_friendly_time_message(func_name, time_dict):
     message = f"The function '{func_name}' took"
     time_taken_message = ""
 
