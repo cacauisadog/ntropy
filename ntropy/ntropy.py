@@ -2,7 +2,14 @@ import gc
 import sys
 import time
 from functools import partial, wraps
-from typing import Callable, Literal, Optional
+from typing import Callable, Literal, Optional, TypedDict
+
+
+class TimeDict(TypedDict):
+    hours: int
+    minutes: int
+    seconds: int
+    miliseconds: int
 
 
 def measure_time(
@@ -27,7 +34,7 @@ def measure_time(
             end = time.perf_counter_ns()
             abs_elapsed_time_ns = end - start
             abs_elapsed_time_ms = abs_elapsed_time_ns / 1e6
-            time_dict = _build_time_dict(abs_elapsed_time_ms)
+            time_dict: TimeDict = _build_time_dict(abs_elapsed_time_ms)
             pretty_message: str = _build_time_message(name, time_dict, message_format)
 
             sys.stdout.write(pretty_message)
@@ -39,7 +46,7 @@ def measure_time(
     return wrapper
 
 
-def _build_time_dict(abs_elapsed_time_ms):
+def _build_time_dict(abs_elapsed_time_ms) -> TimeDict:
     miliseconds = int(abs_elapsed_time_ms % 1000)
 
     abs_elapsed_time_sec = abs_elapsed_time_ms // 1e3
@@ -58,14 +65,14 @@ def _build_time_dict(abs_elapsed_time_ms):
     }
 
 
-def _build_time_message(func_name, time_dict, message_format):
+def _build_time_message(func_name, time_dict: TimeDict, message_format):
     if message_format == "human":
         return _build_human_friendly_time_message(func_name, time_dict)
 
     return _build_complete_time_message(func_name, time_dict)
 
 
-def _build_human_friendly_time_message(func_name, time_dict):
+def _build_human_friendly_time_message(func_name, time_dict: TimeDict):
     message = f"The function '{func_name}' took"
     time_taken_message = ""
 
@@ -98,7 +105,7 @@ def _build_human_friendly_time_message(func_name, time_dict):
     return full_message
 
 
-def _build_complete_time_message(func_name, time_dict):
+def _build_complete_time_message(func_name, time_dict: TimeDict):
     message = f"The function '{func_name}' took"
     time_taken_message = (
         f"{time_dict['hours']}hr {time_dict['minutes']}min {time_dict['seconds']}sec {time_dict['miliseconds']}ms"
