@@ -2,10 +2,12 @@ import gc
 import sys
 import time
 from functools import partial, wraps
-from typing import Callable, Optional
+from typing import Callable, Literal, Optional
 
 
-def measure_time(func: Optional[Callable] = None, *, disable_gc=False):
+def measure_time(
+    func: Optional[Callable] = None, *, message_format: Literal["complete", "short"] = "complete", disable_gc=False
+):
     if func is None:
         return partial(measure_time, disable_gc=disable_gc)
 
@@ -26,7 +28,7 @@ def measure_time(func: Optional[Callable] = None, *, disable_gc=False):
             abs_elapsed_time_ns = end - start
             abs_elapsed_time_ms = abs_elapsed_time_ns / 1e6
             time_dict = _build_time_dict(abs_elapsed_time_ms)
-            pretty_message: str = _build_time_message(name, time_dict)
+            pretty_message: str = _build_time_message(name, time_dict, message_format)
 
             sys.stdout.write(pretty_message)
             sys.stdout.write("\n\n")
@@ -56,7 +58,12 @@ def _build_time_dict(abs_elapsed_time_ms):
     }
 
 
-def _build_time_message(func_name, time_dict):
+def _build_time_message(func_name, time_dict, message_format):
+    if message_format == "complete":
+        return _build_complete_time_message(func_name, time_dict)
+
+
+def _build_complete_time_message(func_name, time_dict):
     message = f"The function '{func_name}' took"
     time_taken_message = ""
 
