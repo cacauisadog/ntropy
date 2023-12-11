@@ -13,6 +13,11 @@ def _takes_one_milisecond():
     time.sleep(0.001)
 
 
+@measure_time(message_format="complete")
+def _takes_one_msec_complete():
+    time.sleep(0.001)
+
+
 @measure_time
 def _takes_two_miliseconds():
     time.sleep(0.002)
@@ -244,3 +249,26 @@ def test_takes_less_than_a_milisecond():
 
         assert len(out_value) > 0, "No stdout text found."
         assert "less than one milisecond" in out_value, "Function took an unexpected time to run."
+
+
+def test_takes_one_milisecond_complete():
+    with mock.patch("sys.stdout", new=io.StringIO()) as out:
+        _takes_one_msec_complete()
+        out_value = out.getvalue()
+
+        should_not_be_in_stdout = [
+            "hours",
+            "hour",
+            "minutes",
+            "minute",
+            "seconds",
+            "second",
+            "miliseconds",
+            "milisecond",
+        ]
+
+        assert len(out_value) > 0, "No stdout text found."
+        assert all(
+            string not in out_value for string in should_not_be_in_stdout
+        ), f"These strings shouldn't show up in stdout: {'|'.join(should_not_be_in_stdout)}.\n Got: {out_value}"
+        assert "0hr 0min 0sec 1ms" in out_value, "Function took an unexpected time to run or wrong format."

@@ -9,7 +9,7 @@ def measure_time(
     func: Optional[Callable] = None, *, message_format: Literal["human", "complete"] = "human", disable_gc=False
 ):
     if func is None:
-        return partial(measure_time, disable_gc=disable_gc)
+        return partial(measure_time, message_format=message_format, disable_gc=disable_gc)
 
     name = func.__name__
 
@@ -62,6 +62,8 @@ def _build_time_message(func_name, time_dict, message_format):
     if message_format == "human":
         return _build_human_friendly_time_message(func_name, time_dict)
 
+    return _build_complete_time_message(func_name, time_dict)
+
 
 def _build_human_friendly_time_message(func_name, time_dict):
     message = f"The function '{func_name}' took"
@@ -93,4 +95,14 @@ def _build_human_friendly_time_message(func_name, time_dict):
 
     full_message = message + time_taken_message + " to run."
 
+    return full_message
+
+
+def _build_complete_time_message(func_name, time_dict):
+    message = f"The function '{func_name}' took"
+    time_taken_message = (
+        f"{time_dict['hours']}hr {time_dict['minutes']}min {time_dict['seconds']}sec {time_dict['miliseconds']}ms"
+    )
+
+    full_message = message + " " + time_taken_message + " to run."
     return full_message
