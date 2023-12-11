@@ -1,1 +1,1 @@
-from .ntropy import measure
+from .ntropy import measure_time

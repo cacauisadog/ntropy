@@ -5,9 +5,9 @@ from functools import partial, wraps
 from typing import Callable
 
 
-def measure(func: Callable = None, *, disable_gc=False):
+def measure_time(func: Callable = None, *, disable_gc=False):
     if func is None:
-        return partial(measure, disable_gc=disable_gc)
+        return partial(measure_time, disable_gc=disable_gc)
 
     name = func.__name__
 

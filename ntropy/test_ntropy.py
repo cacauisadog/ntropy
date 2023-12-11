@@ -5,55 +5,56 @@ from unittest import mock
 
 from freezegun import freeze_time
 
-from ntropy import measure
+from ntropy import measure_time
 
 
-@measure
+@measure_time
 def _takes_one_milisecond():
     time.sleep(0.001)
 
 
 @measure(disable_gc=True)
+@measure_time(disable_gc=True)
 def _takes_one_milisecond_with_gc_off():
     time.sleep(0.001)
 
 
-@measure
+@measure_time
 def _takes_one_second():
     time.sleep(1)
 
 
-@measure
+@measure_time
 def _takes_two_seconds():
     time.sleep(2)
 
 
-@measure
+@measure_time
 def _takes_one_mocked_hour():
     time.sleep(1)
 
 
-@measure
+@measure_time
 def _takes_two_mocked_hours():
     time.sleep(2)
 
 
-@measure
+@measure_time
 def _takes_one_mocked_minute():
     time.sleep(1)
 
 
-@measure
+@measure_time
 def _takes_two_mocked_minutes():
     time.sleep(2)
 
 
-@measure
+@measure_time
 def _takes_two_mocked_hours_two_minutes_two_seconds():
     time.sleep(7322)
 
 
-@measure
+@measure_time
 def _takes_less_than_one_milisecond():
     print("this is pretty fast boi")
 
