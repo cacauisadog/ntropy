@@ -2,10 +2,10 @@ import gc
 import sys
 import time
 from functools import partial, wraps
-from typing import Callable
+from typing import Callable, Optional
 
 
-def measure_time(func: Callable = None, *, disable_gc=False):
+def measure_time(func: Optional[Callable] = None, *, disable_gc=False):
     if func is None:
         return partial(measure_time, disable_gc=disable_gc)
 
